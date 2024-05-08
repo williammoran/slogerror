@@ -22,6 +22,8 @@ var states = map[string]map[string][]string{
 // into error messages.
 
 func main() {
+	// Use the slogerror handler as middleware to track log
+	// attributes.
 	l := slog.New(slogerror.NewHandler(slog.NewTextHandler(os.Stderr, nil)))
 	for stateName, cities := range states {
 		l0 := l.With(slog.String("state name", stateName))

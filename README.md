@@ -16,21 +16,21 @@ example:
 
 ```go
 for stateName, cities := range states {
-		l0 := l.With(slog.String("state name", stateName))
-		for cityName, streets := range cities {
-			l1 := l0.With(slog.String("city name", cityName))
-			for _, streetName := range streets {
-				l2 := l1.With(slog.String("street name", streetName))
-				l2.Debug("processing street")
-				err := fmt.Errorf("error on %s in %s, %s", streetName, cityName, stateName)
-				// ...
-			}
+	l0 := l.With(slog.String("state name", stateName))
+	for cityName, streets := range cities {
+		l1 := l0.With(slog.String("city name", cityName))
+		for _, streetName := range streets {
+			l2 := l1.With(slog.String("street name", streetName))
+			l2.Debug("processing street")
+			err := fmt.Errorf("error on %s in %s, %s", streetName, cityName, stateName)
+			// ...
 		}
 	}
+}
 ```
 
 Creating the error requires recreating the context that already
-existed in the logger. This is redundant and error prone, and
+exists in the logger. This is redundant and error prone, and
 can be quite onerous when the context is complex or extensive.
 Sometimes it's not even possible because the code may not
 have access to all the values that are required to
@@ -44,21 +44,23 @@ make use of it.
 contextual information from an `slog.Logger`
 
 ```go
+// Use the slogerror error handler to track log attributes
+l := slog.New(slogerror.NewHandler(slog.NewTextHandler(os.Stderr, nil)))
 for stateName, cities := range states {
-		l0 := l.With(slog.String("state name", stateName))
-		for cityName, streets := range cities {
-			l1 := l0.With(slog.String("city name", cityName))
-			for _, streetName := range streets {
-				l2 := l1.With(slog.String("street name", streetName))
-				l2.Info("processing street")
-				// There's no need to include details of the street
-				// in the error message, since the logging context will
-				// automatically add it.
-				err := slogerror.Error(l2, "error on this street")
-				// ...
-			}
+	l0 := l.With(slog.String("state name", stateName))
+	for cityName, streets := range cities {
+		l1 := l0.With(slog.String("city name", cityName))
+		for _, streetName := range streets {
+			l2 := l1.With(slog.String("street name", streetName))
+			l2.Info("processing street")
+			// There's no need to include details of the street
+			// in the error message, since the logging context will
+			// automatically add it.
+			err := slogerror.Error(l2, "error on street")
+			// ...
 		}
 	}
+}
 ```
 
 `slogerror.Error()` includes all context from the Logger in the error

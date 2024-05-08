@@ -7,7 +7,9 @@ import (
 	"time"
 )
 
-// Handler is a slog.Handler that
+// Handler is a [slog.Handler] that acts as middleware to facilitate
+// the [Error] and [Wrap] methods. This handler must be used in order
+// for those methods to fully function.
 type Handler struct {
 	target slog.Handler
 	attrs  []slog.Attr
@@ -31,7 +33,7 @@ func (lh *Handler) Handle(ctx context.Context, record slog.Record) error {
 	return lh.target.Handle(ctx, record)
 }
 
-// WithAttrs returns a new LogHandler with the provided attributes.
+// WithAttrs returns a new Handler with the provided attributes.
 func (lh *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	newTarget := lh.target.WithAttrs(attrs)
 	newAttrs := lh.attrs
@@ -48,7 +50,7 @@ func (lh *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	}
 }
 
-// WithGroup returns a new LogHandler with the provided group.
+// WithGroup returns a new Handler with the provided group.
 func (lh *Handler) WithGroup(name string) slog.Handler {
 	newTarget := lh.target.WithGroup(name)
 	return &Handler{
