@@ -2,6 +2,9 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/williammoran/slogerror.svg)](https://pkg.go.dev/github.com/williammoran/slogerror)
 
+I've made a video about the library, in case you prefer that to reading:
+(https://youtu.be/5sFlWf9AdZY)
+
 ## The Problem
 
 In addition to making it easy to integrate with log aggregators,
